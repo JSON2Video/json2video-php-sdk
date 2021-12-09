@@ -3,10 +3,13 @@
     "description": "PHP SDK for JSON2Video API: Create videos programmatically",
     "type": "SDK",
     "license": "MIT",
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "Json2video\\json2video-php-sdk\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "php": ">=7.4"
+    }
 }
