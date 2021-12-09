@@ -1,0 +1,12 @@
+{
+    "name": "json2video/json2video-php-sdk",
+    "description": "PHP SDK for JSON2Video API: Create videos programmatically",
+    "type": "SDK",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Json2video\\json2video-php-sdk\\": "src/"
+        }
+    },
+    "require": {}
+}
