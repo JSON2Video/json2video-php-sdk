@@ -6,7 +6,7 @@
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "Json2video\\json2video-php-sdk\\": "src/"
+            "JSON2Video\\": "src/"
         }
     },
     "require": {
