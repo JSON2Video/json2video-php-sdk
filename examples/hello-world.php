@@ -13,7 +13,7 @@ use JSON2Video\Movie;
 use JSON2Video\Scene;
 
 // Import the SDK
-include "../src/json2video-php-sdk.php";
+include "../bundled/all.php";
 
 // Get your free API key at https://json2video.com
 define ('YOUR_API_KEY', '');

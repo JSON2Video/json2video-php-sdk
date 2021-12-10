@@ -1,7 +1,7 @@
 # Create videos programmatically in PHP
 Create and edit videos: add watermarks, resize videos, create slideshows, add soundtrack, automate the creation of videos in multiple languages, add voice-over, add text animations.
 
-JSON2Video API is the easiest way to create, edit and customise videos programmatically. Its dead simple approach, close to the web development mindset, makes it the ultimate solution for developers that want to create or customise videos in an automated way.
+[JSON2Video API](https://json2video.com) is the easiest way to create, edit and customise videos programmatically. Its dead simple approach, close to the web development mindset, makes it the ultimate solution for developers that want to create or customise videos in an automated way.
 
 Additionally, the simple integration of real HTML5+CSS elements, the already built-in text animations and voice generation (TTS) converts JSON2Video in the best solution in its category.
 
@@ -94,4 +94,4 @@ JSON2Video makes video creation easy as a piece of cake:
 
 This is the resulting video:
 
-https://assets.json2video.com/mkt/github/hello-world.mp4
+https://assets.json2video.com/sites/github/hello-world.mp4
