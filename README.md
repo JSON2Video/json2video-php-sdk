@@ -28,12 +28,15 @@ You can use JSON2Video PHP SDK as a Composer package or with a simple require_on
 ### Using require_once
 The simplest way :-)
 
-1) Download all.php from the /bundled folder into your project directory
+1) Download [all.php](https://github.com/JSON2Video/json2video-php-sdk/blob/main/bundled/all.php) from the /bundled folder into your project directory
 2) Import the library:
 
 ```php
 <?php
     require_once 'path/to/the/sdk/all.php';
+
+    use JSON2Video\Movie;
+    use JSON2Video\Scene;
 
 ```
 
@@ -44,7 +47,7 @@ The SDK has no external dependencies on other packages.
 2) Use composer:
 
 ```
-$ composer require json2video/json2video-php-sdk
+composer require json2video/json2video-php-sdk
 ```
 
 ## Hello world
@@ -52,6 +55,12 @@ JSON2Video makes video creation easy as a piece of cake:
 
 ```php
 <?php
+
+    require 'vendor/autoload.php';
+
+    use JSON2Video\Movie;
+    use JSON2Video\Scene;
+
     // Create a new movie
     $movie = new Movie;
 
@@ -88,8 +97,11 @@ JSON2Video makes video creation easy as a piece of cake:
     // Add the scene to the movie
     $movie->addScene($scene);
 
-    // Call the API and render the movie
+    // Call the API and start rendering the movie
     $movie->render();
+
+    // Wait for the render to finish
+    $movie->waitToFinish();
 ```
 
 This is the resulting video:

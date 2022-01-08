@@ -57,19 +57,8 @@ class Base {
 
 
 class Scene extends Base {
-    protected $properties = ['comment', 'background_color', 'duration', 'cache'];
-
+    protected $properties = ['comment', 'background_color', 'transition', 'duration', 'cache'];
     protected $object = [];
-
-    public function setTransition($style=null, $duration=null, $type=null) {
-        if ($style || $duration || $type) {
-            if (!isset($this->object['transition'])) $this->object['transition'] = [];
-            if (!is_null($style)) $this->object['transition']['style'] = $style;
-            if (!is_null($duration)) $this->object['transition']['duration'] = $duration;
-            if (!is_null($type)) $this->object['transition']['type'] = $type;
-        }
-    }
-    
 }
 
 class Movie extends Base {
@@ -169,5 +158,40 @@ class Movie extends Base {
         else throw new \Error('SDK error');
 
         return false;
+    }
+
+    public function waitToFinish($delay=5, $callback=null) {
+
+        $max_loops = 100;
+        $loops = 0;
+
+        while ($loops<$max_loops) {
+            $response = $this->getStatus();
+            
+            if ($response && ($response['success']??false) && isset($response['movies']) && count($response['movies'])==1) {
+                if (isset($response['movies'][0]['status']) && $response['movies'][0]['status']=='done') {
+                    if (is_callable($callback)) $callback($response['movies'][0]);
+                    else $this->printStatus($response['movies'][0]);
+
+                    return $response['movies'][0];
+                }
+            }
+            else {
+                throw new \Error('Invalid API response');
+            }
+
+            if (is_callable($callback)) $callback($response['movies'][0]);
+            else $this->printStatus($response['movies'][0]);
+
+            sleep($delay);
+            $loops++;
+        }
+    }
+
+    public function printStatus($response) {
+        echo 'Status: ', $response['status'], ' / ', $response['task'], PHP_EOL;
+        if ($response['status']=='done') {
+            echo PHP_EOL, 'Movie URL: ', $response['url'], PHP_EOL, PHP_EOL;
+        }
     }
 }
