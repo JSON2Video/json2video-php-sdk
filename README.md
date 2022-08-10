@@ -68,7 +68,7 @@ JSON2Video makes video creation easy as a piece of cake:
 
     // Set your API key
     // Get your free API key at https://json2video.com
-    $movie->setAPIKey('7SsNlCEwaB6uZoz0jpZnI3D0b0EZyW1KASxQjYm1');
+    $movie->setAPIKey(YOUR_API_KEY);
 
     // Set movie quality: low, medium, high
     $movie->quality = 'high';
