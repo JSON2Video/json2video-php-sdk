@@ -62,8 +62,8 @@ class Scene extends Base {
 }
 
 class Movie extends Base {
-    private $api_url = 'https://api.json2video.com/v1/movies';
-    protected $properties = ['comment', 'project', 'width', 'height', 'resolution', 'quality', 'fps', 'cache'];
+    private $api_url = 'https://api.json2video.com/v2/movies';
+    protected $properties = ['comment', 'draft', 'width', 'height', 'resolution', 'quality', 'fps', 'cache'];
 
     private $apikey = null;
 
@@ -123,7 +123,12 @@ class Movie extends Base {
         ]);
 
         if ($response) {
-            if ($response['status']=='200') return json_decode($response['response'], true);
+            if ($response['status']=='200') {
+                $render = json_decode($response['response'], true);
+                if ($render['success']??false && !empty($render['project'])) $this->object['project'] = $render['project'];
+                else throw new \Exception("Render didn't return a project ID");
+                return $render;
+            }
             elseif ($response['status']=='400') {
                 $api_response = json_decode($response['response'], true);
                 throw new \Exception('JSON Syntax error: ' . ($api_response['message'] ?? 'Unknown error'));
@@ -138,12 +143,14 @@ class Movie extends Base {
         return false;
     }
 
-    public function getStatus() {
+    public function getStatus($project=null) {
+
+        if (!$project) $project = $this->object['project'] ?? null;
 
         if (empty($this->apikey)) throw new \Exception('Invalid API Key');
-        if (empty($this->object['project'])) throw new \Exception('Project ID not set');
+        if (!$project) throw new \Exception('Project ID not set');
 
-        $url = $this->api_url . '?project=' . $this->object['project'];
+        $url = $this->api_url . '?project=' . $project;
 
         $status = $this->fetch('GET', $url, '', [
             "x-api-key: {$this->apikey}"
@@ -162,36 +169,35 @@ class Movie extends Base {
 
     public function waitToFinish($delay=5, $callback=null) {
 
-        $max_loops = 100;
+        $max_loops = 60;
         $loops = 0;
 
         while ($loops<$max_loops) {
             $response = $this->getStatus();
             
-            if ($response && ($response['success']??false) && isset($response['movies']) && count($response['movies'])==1) {
-                if (isset($response['movies'][0]['status']) && $response['movies'][0]['status']=='done') {
-                    if (is_callable($callback)) $callback($response['movies'][0]);
-                    else $this->printStatus($response['movies'][0]);
+            if ($response && ($response['success']??false) && !empty($response['movie'])) {
 
-                    return $response['movies'][0];
+                if (is_callable($callback)) $callback($response['movie'], $response['remaining_quota']);
+                else $this->printStatus($response['movie'], $response['remaining_quota']);
+
+                if (!empty($response['movie']['status']) && $response['movie']['status']=='done') {
+                    return $response;
                 }
             }
             else {
                 throw new \Error('Invalid API response');
             }
 
-            if (is_callable($callback)) $callback($response['movies'][0]);
-            else $this->printStatus($response['movies'][0]);
-
             sleep($delay);
             $loops++;
         }
     }
 
-    public function printStatus($response) {
-        echo 'Status: ', $response['status'], ' / ', $response['task'], PHP_EOL;
+    public function printStatus($response, $quota) {
+        echo 'Status: ', $response['status'], ' / ', $response['message'], PHP_EOL;
         if ($response['status']=='done') {
-            echo PHP_EOL, 'Movie URL: ', $response['url'], PHP_EOL, PHP_EOL;
+            echo PHP_EOL, 'Movie URL: ', $response['url'], PHP_EOL;
+            echo 'Remaining quota: movies(', $quota['movies'], ') and drafts(', $quota['drafts'], ')', PHP_EOL, PHP_EOL;
         }
     }
 }

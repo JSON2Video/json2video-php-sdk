@@ -1,3 +1,5 @@
+Note: Updated for API v2.0
+
 # Create videos programmatically in PHP
 Create and edit videos: add watermarks, resize videos, create slideshows, add soundtrack, automate the creation of videos in multiple languages, add voice-over, add text animations.
 
@@ -66,13 +68,11 @@ JSON2Video makes video creation easy as a piece of cake:
 
     // Set your API key
     // Get your free API key at https://json2video.com
-    $movie->setAPIKey(YOUR_API_KEY);
-
-    // Set a project ID
-    $movie->project = 'myproj';
+    $movie->setAPIKey('7SsNlCEwaB6uZoz0jpZnI3D0b0EZyW1KASxQjYm1');
 
     // Set movie quality: low, medium, high
     $movie->quality = 'high';
+    $movie->draft = true;
 
     // Create a new scene
     $scene = new Scene;
@@ -85,11 +85,8 @@ JSON2Video makes video creation easy as a piece of cake:
     // Element's vertical position is 50 pixels from the top
     $scene->addElement([
         'type' => 'text',
-        'template' => 'basic/006',
-        'items' => [
-            [ 'text' => 'Hello world' ]
-        ],
-        'y' => 50,
+        'style' => '003',
+        'text' => 'Hello world',
         'duration' => 10,
         'start' => 2
     ]);
@@ -98,10 +95,15 @@ JSON2Video makes video creation easy as a piece of cake:
     $movie->addScene($scene);
 
     // Call the API and start rendering the movie
-    $movie->render();
+    $result = $movie->render();
+    var_dump($result);
+
+    //$result = $movie->getStatus('cLiLZ7fKeMvjb4b8');
+    //var_dump($result);
 
     // Wait for the render to finish
     $movie->waitToFinish();
+?>
 ```
 
 This is the resulting video:
