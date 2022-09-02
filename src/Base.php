@@ -42,4 +42,10 @@ class Base {
     public function getObject() {
         return $this->object;
     }
+
+    // Added in v2
+    public function setJSON($object) {
+        if (is_array($object)) $this->object = $object;
+        elseif (is_string($object)) $this->object = json_decode($object, true);
+    }
 }
