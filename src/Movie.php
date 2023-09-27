@@ -110,35 +110,59 @@ class Movie extends Base {
 
     public function waitToFinish($delay=5, $callback=null) {
 
-        $max_loops = 60;
+        $max_loops = 60;  // loop up to 60 times
         $loops = 0;
 
         while ($loops<$max_loops) {
-            $response = $this->getStatus();
+            $response = $this->getStatus();  // get the movie rendering status
             
             if ($response && ($response['success']??false) && !empty($response['movie'])) {
+                // if the API returns a valid response
 
-                if (is_callable($callback)) $callback($response['movie'], $response['remaining_quota']);
-                else $this->printStatus($response['movie'], $response['remaining_quota']);
+                if (is_callable($callback)) {
+                    // if the callback function is set, use it
+                    $callback($response['movie'], $response['remaining_quota']);
+                }
+                else {
+                    // if not, print the status
+                    $this->printStatus($response['movie'], $response['remaining_quota']);
+                }
 
-                if (!empty($response['movie']['status']) && $response['movie']['status']=='done') {
-                    return $response;
+                if (!empty($response['movie']['status'])) {
+                    // if the response has a status (it should), check what is the status...
+
+                    if ($response['movie']['status']=='done') {
+                        // if the movie is done
+                        return $response;
+                    }
+                    
+                    if ($response['movie']['status']=='error') {
+                        // if the movie rendering has failed
+                        throw new \Exception($response['movie']['message']);
+                    }
                 }
             }
             else {
+                // if the API doesn't return a valid response
                 throw new \Error('Invalid API response');
             }
 
-            sleep($delay);
+            sleep($delay);  // wait for $delay
             $loops++;
         }
+
+        throw new \Error('The rendering process took more than expected or maybe failed');
     }
 
     public function printStatus($response, $quota) {
-        echo 'Status: ', $response['status'], ' / ', $response['message'], PHP_EOL;
+        // print the status
+        echo 'Status: ', $response['status']??'', ' / ', $response['message']??'', PHP_EOL;
+
+        // if the movie is done
         if ($response['status']=='done') {
-            echo PHP_EOL, 'Movie URL: ', $response['url'], PHP_EOL;
-            echo 'Remaining quota: movies(', $quota['movies'], ') and drafts(', $quota['drafts'], ')', PHP_EOL, PHP_EOL;
+            // print the URL and remaining quota
+            echo PHP_EOL, 'Movie URL: ', $response['url']??'No URL', PHP_EOL;
+            echo 'Remaining time quota: ', $quota['time']??'No quota', ' seconds', PHP_EOL, PHP_EOL;
         }
     }
 }
