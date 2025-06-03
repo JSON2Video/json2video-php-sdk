@@ -63,7 +63,7 @@ class Scene extends Base {
 
 class Movie extends Base {
     private $api_url = 'https://api.json2video.com/v2/movies';
-    protected $properties = ['comment', 'draft', 'width', 'height', 'resolution', 'exports', 'quality', 'fps', 'cache', 'template', 'variables', 'id'];
+    protected $properties = ['comment', 'draft', 'width', 'height', 'resolution', 'exports', 'quality', 'fps', 'cache', 'template', 'variables', 'id', 'client-data'];
 
     private $apikey = null;
 
